@@ -11,16 +11,19 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker> _markers = {};
   var locs = [];
 
+// method for tracking evry user marker and save it to the _marker set
   void _handleMapTap(LatLng tappedLocation) {
     setState(() {
       locs.add(tappedLocation);
+      SessionPref.setDataString(locs, "okay");
       _markers.add(
         Marker(
           markerId: MarkerId(tappedLocation.toString()),
           position: tappedLocation,
           infoWindow: InfoWindow(
-            title: "hello",
-            snippet: "",
+            title: "Space X",
+            snippet: "1020 S.A",
+
           ),
         ),
       );
@@ -29,14 +32,16 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SessionPref.setDataString(locs, "okay");
+
+
+    
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Map Screen'),
         leading: ElevatedButton(
             onPressed: () {
-              print(SessionPref.getDataArray()![0]);
+              print(SessionPref.getDataArray()![1]);
             },
             child: Text("Trial")),
       ),
