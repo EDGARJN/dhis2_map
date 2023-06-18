@@ -9,48 +9,49 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   Set<Marker> _markers = {};
-  var locs = [];
+  var locs = SessionPref.getList();
 
 // method for tracking evry user marker and save it to the _marker set
   void _handleMapTap(LatLng tappedLocation) {
     setState(() {
       locs.add(tappedLocation);
-      SessionPref.setDataString(locs, "okay");
-      _markers.add(
-        Marker(
-          markerId: MarkerId(tappedLocation.toString()),
-          position: tappedLocation,
-          infoWindow: InfoWindow(
-            title: "Space X",
-            snippet: "1020 S.A",
-
-          ),
-        ),
-      );
+      SessionPref.saveList(locs);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-    
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Map Screen'),
-        leading: ElevatedButton(
-            onPressed: () {
-              print(SessionPref.getDataArray()![1]);
-            },
-            child: Text("Trial")),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                var data = SessionPref.getList();
+                print(data[0]);
+              },
+              child: Text("GET "))
+        ],
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: LatLng(37.422, -122.084),
           zoom: 15.0,
         ),
-        markers: _markers,
+        // markers: _markers,
+        markers: {
+          for (var i in SessionPref.getList())
+            Marker(
+              markerId: MarkerId(i.toString()),
+              position: LatLng(i[0], i[1]),
+              infoWindow: InfoWindow(
+                  title: "Space X",
+                  snippet: "1020 S.A",
+                  onTap: () {
+                    locs.remove(i);
+                  }),
+            )
+        },
         onTap: _handleMapTap,
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionPref {
@@ -13,8 +15,8 @@ class SessionPref {
 
   static Future setName(name) async => await pref.setString(jadu, name);
 
-  static Future setDataString(fname, email) async =>
-      await pref.setStringList(mengi, <String>[fname, email]);
+  static Future setDataString(List<String> myList) async =>
+      await pref.setStringList(mengi, myList);
   
 
   static List<String>? getDataArray() {
@@ -33,4 +35,25 @@ class SessionPref {
     var data = pref.getString(jadu);
     return data;
   }
+
+  static Future saveList(List<dynamic> myList) async {
+  String jsonList = jsonEncode(myList);
+  await   pref.setString('myList', jsonList);
 }
+
+
+static List<dynamic> getList() {
+
+  String? jsonList = pref.getString('myList');
+  if (jsonList != null) {
+    List<dynamic> myList = jsonDecode(jsonList);
+    return myList;
+  } else {
+    return [];
+  }
+}
+}
+
+
+
+
